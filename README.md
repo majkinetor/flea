@@ -54,6 +54,7 @@ Array of scheduled function definitions. Each element contains array with the fo
     `*:10/-1h`<br/> Runs on 10th minute of any hour, repeats once per hour and restarts the previous instance if it is still running.<br/>
     `22:*/10m`<br/> Starts on any minute of the 22th hour and repeats every 10 minutes after that.<br/>
     `3`<br/> Starts imediatelly and uses the main timer that runs with frequency defined in the main configuration. Repeats every 3 iterations. If the `freq = 10` this will run the function every 30 seconds.
+
 Notes
 -----
 - To stop flea execution when running in debug mode, press CTRL-c.
