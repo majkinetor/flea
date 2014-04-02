@@ -1,5 +1,5 @@
 Flea
-dd===
+====
 
 Flea is Powershell function scheduler with option to send the function results to arbitrary number of backends. Functions are executed as Powershell background jobs.
 
@@ -40,14 +40,14 @@ Array of function definitions. Each element contains array with the following at
   - `name` <br/>
   Name of the definition.
   - `trigger` <br/>
-  Defines time and frequency of execution. If it is a number it represents iteration in which the function will run relative to the main timer. If it is string it defines how to run the function outside the main timer context. The string is in the form `<hour|*>[:min|*]/[-]freq[h|m]` where:
-    - `hour:min` is starting time of the function. If flea is started before this time, it will wait for it after which it will start execution of the function.`*` means any hour or minute. If minute is not specified it defaults to `*`.
-    - `freq` is frequency that applies only for this function. Negative frequency means to stop executing the function if it is still running when the next trigger time comes (outputs "_restarting: <name>_" in debug mode). Positive frequency means that flea will wait for the previous execution to finish (outputs "_still running: <name>_" in debug mode). `h|m` after frequency denotes 'hour' and 'minute'. Without any specifier the number represents seconds.<br/><br/>
+  Defines time and frequency of execution. If it is a number it represents iteration in which the function will run relative to the main timer. If it is a string it defines how to run the function outside the main timer context. The string is in the form `<hour|*>[:min|*]/[-]freq[h|m]` where:
+    - `hour:min` is starting time of the function. If flea is started before this time, it will wait for it after which it will start the execution of the function. `*` means any hour or minute. If `min` is not specified it defaults to `*`.
+    - `freq` is frequency that applies only for this function. Negative frequency means to stop executing the function if it is still running when the next trigger time comes (outputs "_restarting: < name >_" in debug mode). Positive frequency means that flea will wait for the previous execution to finish (outputs "_still running: < name >_" in debug mode), that is, the function will be skipped until the next trigger time. The `h|m` after frequency denotes 'hour' and 'minute'. Without any specifier the number represents seconds.<br/><br/>
     **Examples**:<br/>
-    `*/3`<br/> Runs imediatelly and after every 3 seconds.<br/>
-    `*:10/-1h`<br/> Runs on 10th minute of any hour, repeats once pee hour and kills the previous instance if running.<br/>
+    `*/3`<br/> Runs imediatelly, repeat every 3 seconds afterwards.<br/>
+    `*:10/-1h`<br/> Runs on 10th minute of any hour, repeats once per hour and restarts the previous instance if it is still running.<br/>
     `22:*/10m`<br/> Starts on any minute of the 22th hour and repeats every 10 minutes after that.<br/>
-     `3`</br>Starts imediatelly and uses the main timer that runs with frequency defined in the main configuration. Repeats every 3 iterations. If the `freq = 10` this will run the function every 30 seconds.
+    `3`<br/> Starts imediatelly and uses the main timer that runs with frequency defined in the main configuration. Repeats every 3 iterations. If the `freq = 10` this will run the function every 30 seconds.
   - `function`</br>
   Name of the function to run. Function must be defined in either `inc\common_metrics.ps1` or custom include which you can specify using `init_script` option.
   - `function arguments`<br/>
@@ -63,3 +63,4 @@ TODO
 - More trigger options - delay, stop time, list of hours, precise date.
 - Each function to have its own configuration, and the current configuration to act as default if nothing is specified.
 - Accept hash instead of array for function specification.
+- Allow scheduled functions to be defined in the calling script.
