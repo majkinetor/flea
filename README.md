@@ -1,27 +1,29 @@
 Flea
-====
+===
 
 Flea is Powershell function scheduler with option to send the function results to arbitrary number of backends. Functions are executed as Powershell background jobs.
 
 Here is the simple script that runs few monitoring functions:
 
-    . "$PSScriptRoot\inc\flea.ps1"
-    
-    flea @{
-        freq       = 10;
-        backends   = @(
-            ,(statsd "11.22.33.44:8125" "myapp.servers.$($Env:ComputerName)")
-            ,(file "out.txt")
-            ,(console yellow red)
-        );
-        debug      = 1;
-        monitors   = @(
-                , ("cpu_load",  -1,          "cpu_load",  9)
-                , ("ram_free",  6,           "ram_free")
-                , ("disk_c",    '00:00/24h', "disk_free", "c:")
-                , ("sql_count", "*:10/-1h",  "sql_count", $db, "Table")
-        )
-    }
+```PowerShell
+. "$PSScriptRoot\inc\flea.ps1"
+
+flea @{
+    freq       = 10;
+    backends   = @(
+        ,(statsd "11.22.33.44:8125" "myapp.servers.$($Env:ComputerName)")
+        ,(file "out.txt")
+        ,(console yellow red)
+    );
+    debug      = 1;
+    monitors   = @(
+            , ("cpu_load",  -1,          "cpu_load",  9)
+            , ("ram_free",  6,           "ram_free")
+            , ("disk_c",    '00:00/24h', "disk_free", "c:")
+            , ("sql_count", "*:10/-1h",  "sql_count", $db, "Table")
+    )
+}
+```
 
 Arguments
 ---------

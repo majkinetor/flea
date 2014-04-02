@@ -124,8 +124,6 @@ function prepare([hashtable]$cfg)
        if ($_[1].GetType() -eq [string]) { $cfg._.m2 +=  ,$_  }
        else { $cfg._.m1 += ,$_ }
     }
-
-    if (!$cfg.output) {$cfg.output = "flea.txt"}
 }
 
 function flea([hashtable]$cfg)
@@ -166,19 +164,12 @@ function flea([hashtable]$cfg)
         }
         sleep -m 100
     }
-    out "STOP" -SpaceBefore
 }
 
-# desc      :: time/freq
-# time      :: hour[:min]
-# hour, min :: number | *
-# freq      :: [-]number[h|m]
-# *         :: first availalbe
-# -         :: 'restart job'
-# h,m       :: 'hour', 'minute'
-function calculate_next_time([string]$desc)
+# Desc: <hour|*>[:min|*]/[-]freq[h|m]
+function calculate_next_time([string]$Desc)
 {
-    $dt, $fq = $desc.split('/')
+    $dt, $fq = $Desc.split('/')
     $fs = $fq.Substring(0, $fq.length-1)
     $f = switch ($fq[-1]) { 'h' {3600*$fs}; 'm' {60*$fs}; 'd' {86400$fs}; default { $fq } }
 
@@ -213,7 +204,7 @@ function func_tostr($Func, $ReplaceName=$null) {
 }
 
 
-# Job def
+# TODO - Scheduled func def 
 #{
     #name     = '15h';
     #trigger  = '15/1h-18 22:10/30m-01:30';
