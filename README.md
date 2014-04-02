@@ -44,7 +44,7 @@ Array of specification for the functions to run. Each containing array specifies
     - `*` represents "any hour or minute". If minute is not specified it is assumed it is `*`.
     - Negative frequency means to stop executing job if it is still running when the next trigger time comes before previous function execution is finished. Otherwise, the flea wait for the previous execution to finish (and outputs "_still running: name_" in debug mode).
     - `h|m` after frequency denotes 'hour' and 'minute'. Without any specifier the number represents seconds.<br/><br/>
-    **Examples**:<br/><br/>
+    **Examples**:<br/>
     `*/3`<br/> Runs imediatelly and after every 3 seconds.<br/>
     `*:10/-1h`<br/> Runs on 10th minute of any hour, repeats once pee hour and kills the previous instance if running.<br/>
     `22:*/10m`<br/> Runs on any minute of 22th hour and repeats every 10 minutes.<br/>
