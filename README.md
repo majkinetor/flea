@@ -1,7 +1,7 @@
 Flea
 ===
 
-Flea is Powershell function scheduler with option to send the function results to arbitrary number of backends. Functions are executed as Powershell background jobs. Flea requires minimum Powershell 4.0.
+Flea is Powershell function scheduler with option to send the function results to arbitrary number of backends. Functions are executed as Powershell background jobs. Flea requires minimum Powershell 3.0.
 
 Here is the simple script that runs few monitoring functions:
 
