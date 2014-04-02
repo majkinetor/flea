@@ -10,14 +10,14 @@ Here is the simple script that runs few monitoring functions:
     flea @{
         freq       = 10;
         backends   = @(
-            ,(statsd "11.22.33.44:8125" "myapp.servers.$($Env:ComputerName)"),
+            ,(statsd "11.22.33.44:8125" "myapp.servers.$($Env:ComputerName)")
             ,(file "out.txt")
             ,(console yellow red)
         );
         debug      = 1;
         monitors   = @(
-                , ("cpu_load",  -1,          "cpu_load",  9),
-                , ("ram_free",  6,           "ram_free"),
+                , ("cpu_load",  -1,          "cpu_load",  9)
+                , ("ram_free",  6,           "ram_free")
                 , ("disk_c",    '00:00/24h', "disk_free", "c:")
                 , ("sql_count", "*:10/-1h",  "sql_count", $db, "Table")
         )
