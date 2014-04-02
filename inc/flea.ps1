@@ -57,7 +57,7 @@ function job_ctrl($jobName, $restart) {
 function exec($m, $Data)
 {
     # create background job to run the function
-    $s  = [scriptblock]::Create('& $args[0] $args[1] $args[2] $args[3] $args[4]')
+    $s  = [scriptblock]::Create('& $args[0] $args[1] $args[2] $args[3] $args[4] $args[5]')
     $mi = ". $($Data._.PSScriptRoot)\common_metrics.ps1;"
     if ($Data.init_script)  { $mi += ". $Data.init_script;" }
     $si = [scriptblock]::Create($mi)
