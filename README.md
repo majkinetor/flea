@@ -30,11 +30,11 @@ Flea accepts `[HashTable]` configuration argument with the following attributes:
 - `freq` <br/>
 Frequency of the main timer in seconds. This timer starts immediately upon executing flea and run all functions that define `trigger` as number.
 - `backends` <br/>
-Array of backend objects that implement `Send($Name, $Value)` method.
+Array of backend objects that implement `Send($Name, $Value)` method. Several backends are available in `inc\backends.ps` (add new ones in that file).
 - `debug` <br/>
 Enables listing of detailed information in console while running. To see function results use with `console` backend.
 - `init_script`<br/>
-Path to Powershell script to be included with the executing function. As functions are executed as background jobs any functions you define will not be seen from the job. As alternative, you can define functions inside file `inc\common_metrics.ps1` which is included with all functions.
+Path to Powershell script to be included with the executing function. As functions are executed as background jobs any functions you define will not be seen from the job. As alternative, you can define functions inside file `inc\common_metrics.ps1` which is included with all functions and contains several useful monitoring functions.
 - `monitors` <br/>
 Array of specification for the functions to run. Each containing array specifies the following:
   - `name` <br/>
