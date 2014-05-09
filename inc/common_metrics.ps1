@@ -34,3 +34,13 @@ function sql_count([hashtable]$db, [string]$TableName, [string]$Where)
 function process_count() {
     (gps).length
 }
+
+function render_time($url, $proxy=$null) {
+    $request = New-Object System.Net.WebClient
+    $request.UseDefaultCredentials = $true
+    $start = Get-Date
+    $pageRequest = $Request.DownloadString($url)
+    $timeTaken = ((Get-Date) - $Start).TotalMilliseconds
+    $request.Dispose()
+    $timeTaken
+}
