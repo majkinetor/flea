@@ -79,12 +79,17 @@ $($Data._.include_funcs)
             'Failed'    { out  "ERR: '$($job.Name)' failed - $($job.ChildJobs[0].JobStateInfo.Reason.Message)" }
             'Completed' {
                 $r = Receive-Job -Id  $job.id
+                if ($r.GetType() -ne [HashTable])  { $r = @{ $job.Name = $r } }
+
                 # send to backend
-                $cfg.backends | % {
-                    $s = $_
-                    try { $_.Send($job.Name, $r) }
-                    catch {
-                        out "ERR: Backend '$s' - $_"
+                $r.Keys | % {
+                    $name = $_
+                    $cfg.backends | % {
+                        $s = $_
+                        try { $_.Send($name, $r.$name) }
+                        catch {
+                            out "ERR: Backend '$s' - $_"
+                        }
                     }
                 }
             }
@@ -148,7 +153,6 @@ function flea([hashtable]$cfg)
     }
 
     $now = get-date
-    write-host $x
     $cfg._.m2 | % {
         $m = $_
         $t = calculate_next_time $_[1]

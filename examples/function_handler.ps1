@@ -7,8 +7,11 @@ www.bing.com
 "@
 
 function url_monitor($urls) {
-   . "$PSScriptRoot\rand.ps1"
-   $(rand)
+    . "$PSScriptRoot\rand.ps1"
+    @{
+        'metric1' = rand
+        'metric2' = rand
+     }
 }
 
 flea @{
