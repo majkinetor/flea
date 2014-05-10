@@ -1,4 +1,4 @@
-. "$PSScriptRoot\inc\flea.ps1"
+. "$PSScriptRoot\..\inc\flea.ps1"
 
 flea @{
     freq       = 10;

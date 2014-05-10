@@ -1,0 +1,3 @@
+function rand() {
+    Get-Random
+}

@@ -58,7 +58,11 @@ function exec($m, $Data)
 {
     # create background job to run the function
     $s  = [scriptblock]::Create('& $args[0] $args[1] $args[2] $args[3] $args[4] $args[5]')
-    $mi = ". $($Data._.PSScriptRoot)\common_metrics.ps1;"
+    $mi = @"
+. $($Data._.PSScriptRoot)\common_metrics.ps1
+$($Data._.include_funcs)
+"@
+
     if ($Data.init_script)  { $mi += ". $Data.init_script;" }
     $si = [scriptblock]::Create($mi)
     $job = Start-Job -Name $m[0] -Init $si -Script $s -ArgumentList $m[2..10]
@@ -68,7 +72,7 @@ function exec($m, $Data)
     Register-ObjectEvent $job StateChanged -MessageData $Data -Action {
         $cfg = $event.MessageData
         $job = $sender
-        Invoke-Expression $cfg._.include_funcs
+        #Invoke-Expression $cfg._.include_funcs
 
         switch ($job.State)
         {
@@ -107,23 +111,29 @@ function create_timer( [int]$Freq, [scriptblock]$Action, $Data, [string]$SourceI
 
 function prepare([hashtable]$cfg)
 {
+    # Keep internal data in the _ hash
+    $cfg._ = @{PSScriptRoot  = $PSScriptRoot;}
+    $inc = @()
+
+    $cfg._.m1 = @(); $cfg._.m2 = @() 
+    $cfg.monitors | % {
+       if ($_[2].StartsWith('.')) {
+            $_[2] = $_[2].SubString(1)
+           $inc += $_[2]
+       }
+
+       if ($_[1].GetType() -eq [string]) { $cfg._.m2 +=  ,$_  }
+       else { $cfg._.m1 += ,$_ }
+    }
+
+    # Prepare function imports
     if ($cfg.debug) { $out = 'out1' } else { $out = 'out0' }
     $out_str = func_tostr $out 'script:out'
     Invoke-Expression $out_str
 
-    'out', 'exec', 'job_ctrl' | % { $finc += func_tostr $_ }
-
-    # Keep internal data in the _ hash
-    $cfg._ = @{
-        include_funcs = $finc;
-        PSScriptRoot  = $PSScriptRoot;
-    }
-
-    $cfg._.m1 = @(); $cfg._.m2 = @()
-    $cfg.monitors | % {
-       if ($_[1].GetType() -eq [string]) { $cfg._.m2 +=  ,$_  }
-       else { $cfg._.m1 += ,$_ }
-    }
+    $inc =  @('out', 'exec', 'job_ctrl') + $inc
+    $inc | % { $finc += func_tostr $_ $null $cfg.root }
+    $cfg._.include_funcs = $finc;
 }
 
 function flea([hashtable]$cfg)
@@ -138,6 +148,7 @@ function flea([hashtable]$cfg)
     }
 
     $now = get-date
+    write-host $x
     $cfg._.m2 | % {
         $m = $_
         $t = calculate_next_time $_[1]
@@ -196,11 +207,12 @@ function out1($msg, [switch]$SpaceBefore, [switch]$SpaceAfter) {
     $m  | Write-Host
 }
 
-function func_tostr($Func, $ReplaceName=$null) {
+function func_tostr($Func, $ReplaceName=$null, $root=$null) {
     $f = gi Function:\$Func
     $name = $f.Name
     if ($ReplaceName -ne $null) { $name = $ReplaceName }
-    "function $($name) {$($f.definition)}`n"
+    $x = "function $($name) {$($f.definition.Replace('$PSScriptRoot', $root))}`n"
+    $x
 }
 
 
