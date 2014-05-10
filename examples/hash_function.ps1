@@ -8,24 +8,23 @@ function url_monitor($url, $prefix) {
     $timeTaken = ((Get-Date) - $Start).TotalMilliseconds
     $request.Dispose()
     @{
-        "$($prefix).time"   = $timeTaken
+        "$($prefix).time"   = [int]$timeTaken
         "$($prefix).length" = $pageRequest.Length
      }
 }
 
 flea @{
     root       = $PSScriptRoot;
-    freq       = 5;
+    freq       = 10;
     backends   = @(
-        #,(file "out.txt")
+        ,(file "out.txt")
         ,(console yellow red)
     );
     debug      = 1;
     monitors   = @(
-            , ("cpu_load", -1, "cpu_load",     3)
-            , ("google",   1,  ".url_monitor", 'http://www.google.com', 'google')
-            , ("yahoo",    1,  ".url_monitor", 'http://www.yahoo.com',  'yahoo')
-            , ("bing",     1,  ".url_monitor", 'http://www.bing.com',   'bing')
+            , ("google",   2,  ".url_monitor", 'http://www.google.com', 'google')
+            , ("yahoo",    3,  ".url_monitor", 'http://www.yahoo.com',  'yahoo')
+            , ("bing",     5,  ".url_monitor", 'http://www.bing.com',   'bing')
     )
 }
 
