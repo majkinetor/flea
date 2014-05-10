@@ -67,4 +67,3 @@ TODO
 - More trigger options - delay, stop time, list of hours, precise date.
 - Each function to have its own configuration, and the current configuration to act as default if nothing is specified.
 - Accept hash instead of array for function specification.
-- Allow scheduled functions to be defined in the calling script.
