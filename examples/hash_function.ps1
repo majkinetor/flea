@@ -1,6 +1,8 @@
 . "$PSScriptRoot\..\inc\flea.ps1"
 
 function url_monitor($url, $prefix) {
+    . $PSScriptRoot\rand.ps1
+
     $request = New-Object System.Net.WebClient
     $request.UseDefaultCredentials = $true
     $start = Get-Date
@@ -10,11 +12,11 @@ function url_monitor($url, $prefix) {
     @{
         "$($prefix).time"   = [int]$timeTaken
         "$($prefix).length" = $pageRequest.Length
+        "$($prefix).random" = rand
      }
 }
 
 flea @{
-    root       = $PSScriptRoot;
     freq       = 10;
     backends   = @(
         ,(file "out.txt")
@@ -22,7 +24,7 @@ flea @{
     );
     debug      = 1;
     monitors   = @(
-            , ("google",   2,  ".url_monitor", 'http://www.google.com', 'google')
+            , ("google",   1,  ".url_monitor", 'http://www.google.com', 'google')
             , ("yahoo",    3,  ".url_monitor", 'http://www.yahoo.com',  'yahoo')
             , ("bing",     5,  ".url_monitor", 'http://www.bing.com',   'bing')
     )

@@ -37,8 +37,6 @@ Array of backend objects that implement `Send($Name, $Value)` method. Backends a
 Enables listing of detailed information in console while running. To see function results, use debug with `console` backend.
 - `init_script`<br/>
 Path to Powershell script to be included with the executing function. As functions are executed as background jobs any functions you define will not be seen from the job. As alternative, you can define functions inside file `inc\common_metrics.ps1` which is included with all functions and contains several useful monitoring functions.
-- `root`<br/>
-`$PSScriptRoot` is replaced with this value for functions that include other scripts. This is needed for functions that return HashTable result (see bellow).
 - `monitors` <br/>
 Array of scheduled function definitions. Each element contains array with the following attributes:
   - `name` <br/>
@@ -48,7 +46,8 @@ Array of scheduled function definitions. Each element contains array with the fo
     - `hour:min` is starting time of the function. Flea will wait for this time after which it will start the execution of the function. `*` means any hour or minute. If `min` is not specified it defaults to `*`.
     - `freq` is the frequency that applies only for this function. A negative frequency means to stop executing the function if it is still running when the next trigger time comes (outputs "_restarting: < name >_" in debug mode). A positive frequency means that flea will wait for the previous execution to finish (outputs "_still running: < name >_" in debug mode), that is, the function will be skipped until the next trigger time. The `h|m` after frequency denotes _hour_ and _minute_. Without any specifier the number represents seconds.<br/>
   - `function`<br/>
-  Name of the function to run. Function must be defined in either `inc\common_metrics.ps1` or custom include which you can specify using `init_script` option. If prefixed with `.` char, the function will be redeclared within its background job. If the function needs to include other scripts those must be specified either by using hard-coded path or by starting with `$PSScriptRoot` variable which will be replaced with the `root` configuration parameter. Function must return either numeric value or HashTable. If [HashTable] each of its keys will be send to the defined backends.
+  Name of the function to run. Function must be defined in either `inc\common_metrics.ps1` or custom include which you can specify using `init_script` option. If prefixed with `.` char, the function will be redeclared within its background job. If the function needs to include other scripts those must be specified either by using hard-coded path or by starting with `$PSScriptRoot` variable which will be replaced with the `root` configuration parameter.<br/>
+  Function must return either numeric value or HashTable. If it returns HashTable each of its items will be sent to the defined backends - key will be used as a `$Name` and its value as `$Value` argument of the `Send($Name, $Value)` function implemented by the particular backend. 
   - `function arguments`<br/>
   List of function arguments, max 5.<br/>
   <br/>**Trigger examples**:<br/>

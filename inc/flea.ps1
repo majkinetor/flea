@@ -117,16 +117,15 @@ function create_timer( [int]$Freq, [scriptblock]$Action, $Data, [string]$SourceI
 function prepare([hashtable]$cfg)
 {
     # Keep internal data in the _ hash
-    $cfg._ = @{PSScriptRoot  = $PSScriptRoot;}
+    $cfg._ = @{ PSScriptRoot = $PSScriptRoot; PSScriptRootParent = (Get-Variable -Scope 2 -Name PSScriptRoot -ValueOnly);}
     $inc = @()
 
-    $cfg._.m1 = @(); $cfg._.m2 = @() 
+    $cfg._.m1 = @(); $cfg._.m2 = @()
     $cfg.monitors | % {
        if ($_[2].StartsWith('.')) {
-            $_[2] = $_[2].SubString(1)
-           $inc += $_[2]
+           $_[2] = $_[2].SubString(1)
+           if (!($inc -contains $_[2])) { $inc += $_[2] }
        }
-
        if ($_[1].GetType() -eq [string]) { $cfg._.m2 +=  ,$_  }
        else { $cfg._.m1 += ,$_ }
     }
@@ -137,7 +136,7 @@ function prepare([hashtable]$cfg)
     Invoke-Expression $out_str
 
     $inc =  @('out', 'exec', 'job_ctrl') + $inc
-    $inc | % { $finc += func_tostr $_ $null $cfg.root }
+    $inc | % { $finc += func_tostr $_ $null $cfg._.PSScriptRootParent }
     $cfg._.include_funcs = $finc;
 }
 
