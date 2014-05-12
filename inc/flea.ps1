@@ -7,7 +7,7 @@ $action_m1 = { param ([System.Object]$sender, [System.Timers.ElapsedEventArgs]$e
     if (!$cfg) {$cfg = $sender} #When activated via "create-timer -Invoke and not as event"
     Invoke-Expression $cfg._.include_funcs
 
-    $i++;
+    $cfg._.i++; $i=$cfg._.i
     foreach ($m in $cfg._.m1)
     {
         if ($i % $m[1] ) { continue }
@@ -38,6 +38,7 @@ $action_m2 = { param ([System.Object]$sender, [System.Timers.ElapsedEventArgs]$e
     exec $m $cfg
 }
 
+
 function job_ctrl($jobName, $restart) {
 
     $c = $false
@@ -59,8 +60,9 @@ function exec($m, $Data)
     # create background job to run the function
     $s  = [scriptblock]::Create('& $args[0] $args[1] $args[2] $args[3] $args[4] $args[5]')
     $mi = @"
-. $($Data._.PSScriptRoot)\common_metrics.ps1
-$($Data._.include_funcs)
+        cd "$($Data._.PSScriptRootParent)"
+        . $($Data._.PSScriptRoot)\common_metrics.ps1
+        $($Data._.include_funcs)
 "@
 
     if ($Data.init_script)  { $mi += ". $Data.init_script;" }

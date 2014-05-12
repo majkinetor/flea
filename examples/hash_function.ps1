@@ -1,7 +1,7 @@
 . "$PSScriptRoot\..\inc\flea.ps1"
 
 function url_monitor($url, $prefix) {
-    . $PSScriptRoot\rand.ps1
+    . .\rand.ps1
 
     $request = New-Object System.Net.WebClient
     $request.UseDefaultCredentials = $true
